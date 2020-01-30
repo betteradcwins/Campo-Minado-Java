@@ -1,14 +1,27 @@
 package br.com.brenohof.campominado.models;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-public class Board {
+public class Board implements BiConsumer<Square, SquareEvent> {
     private int rows;
     private int columns;
     private int numberOfMines;
 
     private List<Square> squares = new ArrayList<>();
+    private Set<Consumer<Boolean>> observers = new HashSet<>();
+
+    public void addObserver(Consumer<Boolean> observer) {
+        observers.add(observer);
+    }
+
+    public void notifyObservers(Boolean result) {
+        observers.forEach(o -> o.accept(result));
+    }
 
     public Board(int rows, int columns, int numberOfMines) {
         this.rows = rows;
@@ -47,19 +60,15 @@ public class Board {
     }
 
     public void open(int row, int column) {
-        try {
-            squares.get((row * columns) + column).open();
-        } catch (Exception e) {
-            squares.forEach(s -> {
-                if (s.isMined())
-                    s.setOpened(true);
-            });
-            throw e;
-        }
+        squares.get((row * columns) + column).open();
     }
 
     public void tag(int row, int column) {
         squares.get((row * columns) + column).switchTag();
+    }
+
+    private void uncoverMines() {
+        squares.stream().filter(Square::isMined).forEach(s -> s.setOpened(true));
     }
 
     public boolean wasObjectiveAchieved() {
@@ -69,5 +78,15 @@ public class Board {
     public void restart() {
         squares.forEach(Square::restart);
         shuffleMines();
+    }
+
+    @Override
+    public void accept(Square square, SquareEvent event) {
+        if (event == SquareEvent.EXPLODE) {
+            uncoverMines();
+            notifyObservers(false);
+        } else if (wasObjectiveAchieved()) {
+            notifyObservers(true);
+        }
     }
 }
