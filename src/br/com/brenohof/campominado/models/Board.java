@@ -1,7 +1,5 @@
 package br.com.brenohof.campominado.models;
 
-import br.com.brenohof.campominado.exceptions.ExplosionRuntimeException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +49,7 @@ public class Board {
     public void open(int row, int column) {
         try {
             squares.get((row * columns) + column).open();
-        } catch (ExplosionRuntimeException e) {
+        } catch (Exception e) {
             squares.forEach(s -> {
                 if (s.isMined())
                     s.setOpened(true);
@@ -71,32 +69,5 @@ public class Board {
     public void restart() {
         squares.forEach(Square::restart);
         shuffleMines();
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("  ");
-        for (int column = 0; column < columns; column++) {
-            sb.append(" ");
-            sb.append(column);
-            sb.append(" ");
-        }
-        sb.append("\n");
-        int i = 0;
-        for (int row = 0; row < rows; row++) {
-            sb.append(row);
-            sb.append(" ");
-            for (int column = 0; column < columns; column++) {
-                sb.append(" ");
-                sb.append(squares.get(i));
-                sb.append(" ");
-                i++;
-            }
-            sb.append("\n");
-        }
-
-        return sb.toString();
     }
 }

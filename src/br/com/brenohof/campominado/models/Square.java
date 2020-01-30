@@ -1,10 +1,12 @@
 package br.com.brenohof.campominado.models;
 
-import br.com.brenohof.campominado.exceptions.ExplosionRuntimeException;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Data
 public class Square {
     private final int row;
     private final int column;
@@ -41,27 +43,12 @@ public class Square {
         return neighborhood.stream().noneMatch(n -> n.mined);
     }
 
-    @Override
-    public String toString() {
-        if (tagged) {
-            return "x";
-        } else if (!opened) {
-            return "?";
-        } else if (mined) {
-            return "*";
-        } else if (countMinesAround() > 0) {
-            return Long.toString(countMinesAround());
-        } else {
-            return " ";
-        }
-    }
-
     boolean open() {
         if (!opened && !tagged) {
             opened = true;
 
             if (mined) {
-                throw new ExplosionRuntimeException();
+                // TODO to implement the logic.
             }
 
             if(isNeighborhoodSafe()) {
@@ -70,10 +57,6 @@ public class Square {
             return true;
         }
         return false;
-    }
-
-    public void setOpened(boolean opened) {
-        this.opened = opened;
     }
 
     void switchTag() {
@@ -95,13 +78,5 @@ public class Square {
         this.mined = false;
         this.opened = false;
         this.tagged = false;
-    }
-
-    public boolean isMined() {
-        return mined;
-    }
-
-    public void setMined(boolean mined) {
-        this.mined = mined;
     }
 }
