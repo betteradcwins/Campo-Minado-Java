@@ -3,7 +3,10 @@ package br.com.brenohof.campominado.models;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.BiConsumer;
 
 
 @Data
@@ -15,11 +18,20 @@ public class Square {
     private boolean mined = false;
     private boolean tagged = false;
 
-    List<Square> neighborhood = new ArrayList<>();
+    private List<Square> neighborhood = new ArrayList<>();
+    private Set<BiConsumer<Square, SquareEvent>> observers = new HashSet<>();
 
     Square(int row, int column) {
         this.row = row;
         this.column = column;
+    }
+
+    public void addObserver(BiConsumer<Square, SquareEvent> observer) {
+        observers.add(observer);
+    }
+
+    public void notifyObservers(SquareEvent event) {
+        observers.forEach(o -> o.accept(this, event));
     }
 
     boolean addNeighbor(Square neighbor) {
@@ -45,12 +57,12 @@ public class Square {
 
     boolean open() {
         if (!opened && !tagged) {
-            opened = true;
-
             if (mined) {
-                // TODO to implement the logic.
+                notifyObservers(SquareEvent.EXPLODE);
             }
 
+            setOpened(true);
+            notifyObservers(SquareEvent.OPEN);
             if(isNeighborhoodSafe()) {
                 neighborhood.forEach(Square::open);
             }
@@ -59,9 +71,21 @@ public class Square {
         return false;
     }
 
+    public void setOpened(boolean opened) {
+        this.opened = opened;
+        notifyObservers(SquareEvent.OPEN);
+    }
+
     void switchTag() {
-        if (!opened)
+        if (!opened){
             tagged = !tagged;
+
+            if (tagged) {
+                notifyObservers(SquareEvent.MARK);
+            } else {
+                notifyObservers(SquareEvent.MARK_OFF);
+            }
+        }
     }
 
     boolean wasObjectiveAchieved() {
