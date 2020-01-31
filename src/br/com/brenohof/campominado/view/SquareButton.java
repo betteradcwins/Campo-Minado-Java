@@ -20,6 +20,7 @@ public class SquareButton extends JButton implements BiConsumer<Square, SquareEv
     public SquareButton(Square square) {
         this.square = square;
         setBackground(BG_DEFAULT);
+        setOpaque(true);
         setBorder(BorderFactory.createBevelBorder(0));
 
         addMouseListener(this);
@@ -42,23 +43,39 @@ public class SquareButton extends JButton implements BiConsumer<Square, SquareEv
                 applyDefaultStyle();
                 break;
         }
+        SwingUtilities.invokeLater(() -> {
+            repaint();
+            validate();
+        });
     }
 
     private void applyDefaultStyle() {
-        // !TODO
+        setBackground(BG_DEFAULT);
+        setBorder(BorderFactory.createBevelBorder(0));
+        setText("");
     }
 
     private void applyExplodeStyle() {
-        // !TODO
+        setBackground(BG_EXPLODE);
+        setForeground(Color.WHITE);
+        setText("*");
     }
 
     private void applyMarkStyle() {
-        // !TODO
+        setBackground(BG_MARKED);
+        setForeground(Color.BLACK);
+        setText("M");
     }
 
     private void applyOpenStyle() {
-        setBackground(BG_DEFAULT);
         setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+        if (square.isMined()) {
+            applyExplodeStyle();
+            return;
+        }
+
+        setBackground(BG_DEFAULT);
 
         switch ((int) square.countMinesAround()) {
             case 1:

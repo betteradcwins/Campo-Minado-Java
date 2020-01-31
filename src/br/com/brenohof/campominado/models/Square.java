@@ -104,5 +104,6 @@ public class Square {
         this.mined = false;
         this.opened = false;
         this.tagged = false;
+        notifyObservers(SquareEvent.RESTART);
     }
 }

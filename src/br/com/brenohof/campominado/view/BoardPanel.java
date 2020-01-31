@@ -11,5 +11,17 @@ public class BoardPanel extends JPanel {
         setLayout(new GridLayout(board.getRows(), board.getColumns()));
 
         board.forEachSquare(s -> add(new SquareButton(s)));
+        board.addObserver(e -> {
+
+            SwingUtilities.invokeLater(() -> {
+                if (e) {
+                    JOptionPane.showMessageDialog(this,"Ganhou :)");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Perdeu :C");
+                }
+
+                board.restart();
+            });
+        });
     }
 }
