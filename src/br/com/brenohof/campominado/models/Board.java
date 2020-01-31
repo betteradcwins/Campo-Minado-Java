@@ -1,5 +1,7 @@
 package br.com.brenohof.campominado.models;
 
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -7,10 +9,11 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+@Data
 public class Board implements BiConsumer<Square, SquareEvent> {
-    private int rows;
-    private int columns;
-    private int numberOfMines;
+    private final int rows;
+    private final int columns;
+    private final int numberOfMines;
 
     private List<Square> squares = new ArrayList<>();
     private Set<Consumer<Boolean>> observers = new HashSet<>();
@@ -88,5 +91,9 @@ public class Board implements BiConsumer<Square, SquareEvent> {
         } else if (wasObjectiveAchieved()) {
             notifyObservers(true);
         }
+    }
+
+    public void forEachSquare(Consumer<Square> function) {
+        squares.forEach(function);
     }
 }

@@ -1,7 +1,6 @@
 package br.com.brenohof.campominado.view;
 
 import br.com.brenohof.campominado.models.Board;
-import com.sun.tools.javac.Main;
 
 import javax.swing.*;
 
@@ -10,6 +9,7 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         Board board = new Board(14, 18, 40);
 
+        add(new BoardPanel(board));
         setTitle("Campo Minado");
         setSize(690, 438);
         setLocationRelativeTo(null);
@@ -20,4 +20,5 @@ public class MainFrame extends JFrame {
     public static void main(String[] args) {
         new MainFrame();
     }
+
 }
