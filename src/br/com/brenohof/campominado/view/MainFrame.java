@@ -11,7 +11,7 @@ public class MainFrame extends JFrame {
 
         add(new BoardPanel(board));
         setTitle("Campo Minado");
-        setSize(690, 438);
+        setSize(630, 440);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setVisible(true);

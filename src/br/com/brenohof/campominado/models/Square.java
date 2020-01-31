@@ -51,18 +51,19 @@ public class Square {
         return false;
     }
 
-    private boolean isNeighborhoodSafe() {
+    public boolean isNeighborhoodSafe() {
         return neighborhood.stream().noneMatch(n -> n.mined);
     }
 
-    boolean open() {
+    public boolean open() {
         if (!opened && !tagged) {
             if (mined) {
                 notifyObservers(SquareEvent.EXPLODE);
+                return true;
             }
 
             setOpened(true);
-            notifyObservers(SquareEvent.OPEN);
+
             if(isNeighborhoodSafe()) {
                 neighborhood.forEach(Square::open);
             }
@@ -73,10 +74,11 @@ public class Square {
 
     public void setOpened(boolean opened) {
         this.opened = opened;
-        notifyObservers(SquareEvent.OPEN);
+        if (opened)
+            notifyObservers(SquareEvent.OPEN);
     }
 
-    void switchTag() {
+    public void switchTag() {
         if (!opened){
             tagged = !tagged;
 
@@ -94,7 +96,7 @@ public class Square {
         return protect || uncovered;
     }
 
-    long countMinesAround() {
+    public long countMinesAround() {
         return neighborhood.stream().filter(n -> n.mined).count();
     }
 

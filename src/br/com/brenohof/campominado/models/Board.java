@@ -39,7 +39,9 @@ public class Board implements BiConsumer<Square, SquareEvent> {
     private void generateSquares() {
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
-                squares.add(new Square(row, column));
+                Square square = new Square(row, column);
+                square.addObserver(this::accept);
+                squares.add(square);
             }
         }
     }
@@ -71,7 +73,7 @@ public class Board implements BiConsumer<Square, SquareEvent> {
     }
 
     private void uncoverMines() {
-        squares.stream().filter(Square::isMined).forEach(s -> s.setOpened(true));
+        squares.stream().filter(Square::isMined).filter(s -> !s.isTagged()).forEach(s -> s.setOpened(true));
     }
 
     public boolean wasObjectiveAchieved() {
@@ -83,6 +85,10 @@ public class Board implements BiConsumer<Square, SquareEvent> {
         shuffleMines();
     }
 
+    public void forEachSquare(Consumer<Square> function) {
+        squares.forEach(function);
+    }
+
     @Override
     public void accept(Square square, SquareEvent event) {
         if (event == SquareEvent.EXPLODE) {
@@ -91,9 +97,5 @@ public class Board implements BiConsumer<Square, SquareEvent> {
         } else if (wasObjectiveAchieved()) {
             notifyObservers(true);
         }
-    }
-
-    public void forEachSquare(Consumer<Square> function) {
-        squares.forEach(function);
     }
 }
