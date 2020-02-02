@@ -1,6 +1,6 @@
-package br.com.brenohof.campominado.view;
+package view;
 
-import br.com.brenohof.campominado.models.Board;
+import models.Board;
 
 import javax.swing.*;
 

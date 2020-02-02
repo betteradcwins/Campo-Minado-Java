@@ -1,4 +1,4 @@
-package br.com.brenohof.campominado.models;
+package models;
 
 import lombok.Data;
 

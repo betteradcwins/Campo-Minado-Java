@@ -1,7 +1,7 @@
-package br.com.brenohof.campominado.view;
+package view;
 
-import br.com.brenohof.campominado.models.Square;
-import br.com.brenohof.campominado.models.SquareEvent;
+import models.Square;
+import models.SquareEvent;
 
 import javax.swing.*;
 import java.awt.*;
